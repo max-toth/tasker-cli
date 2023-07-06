@@ -2,5 +2,5 @@ tsk
 .tasker
 .vscode
 .idea
-Tasker.*
+Tasker.dSYM
 Tasker
