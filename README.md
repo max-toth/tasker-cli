@@ -1,7 +1,7 @@
 # tasker-cli
 
 ```bash
-tsk add -p [PROJECT] -t [TITLE]
+tsk -c, --create <TICKET>
 tsk done [TASK_KEY]
 tsk -l
 
