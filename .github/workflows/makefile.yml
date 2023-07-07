@@ -23,6 +23,7 @@ jobs:
   deploy:
 
     runs-on: macos-latest
+    needs: build
 
     steps:
       - name: Packing
