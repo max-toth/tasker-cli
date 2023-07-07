@@ -20,22 +20,17 @@ jobs:
     - name: Make
       run: make
 
-  deploy:
+    - name: Packing
+      run: | 
+        mkdir tasker
+        chmod +x tsk
+        mv tsk tasker
+        ls tasker
+        ./tasker/tsk
 
-    runs-on: macos-latest
-    needs: build
-
-    steps:
-      - name: Packing
-        run: | 
-          mkdir tasker
-          chmod +x tsk
-          mv tsk tasker
-          ls tasker
-          ./tasker/tsk
-
-      - name: Upload
-        uses: actions/upload-artifact@v2
-        with: 
-          name: takser-0.0.1-${{ github.run_id }}
-          path: tasker
+    - name: Upload
+      uses: actions/upload-artifact@v2
+      with: 
+        name: takser-0.0.1-${{ github.run_id }}
+        path: tasker
+      
