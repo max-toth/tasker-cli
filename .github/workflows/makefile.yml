@@ -27,12 +27,12 @@ jobs:
     steps:
 
       - name: Packing
-      run: | 
-        mkdir tasker
-        chmod +x tsk
-        mv tsk tasker
-        ls tasker
-        ./tasker/tsk
+        run: | 
+          mkdir tasker
+          chmod +x tsk
+          mv tsk tasker
+          ls tasker
+          ./tasker/tsk
 
     - name: Upload
       uses: actions/upload-artifact@v2
