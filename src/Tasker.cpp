@@ -1,90 +1,39 @@
 #include <iostream>
 #include <fstream>
 #include <functional>
-#include <string>
+#include <string.h>
 #include <string_view>
+#include <map>
 
-static void print_help() {
-  std::cout << "-c, --create <TICKET> Sentence of ticket short description" << '\n';
-  std::cout << "-r, --resolve <TICKET_ID> Resolve ticket by ID" << '\n';
-  std::cout << "-l, List current day tickets" << '\n';
-}
+#include "cmd/Create.cpp"
+#include "cmd/Resolve.cpp"
+#include "cmd/List.cpp"
 
-int main(int argc, char* argv[]) {
-  if (argc < 2) {
-    print_help();
-    return 0;
-  }
+using namespace std;
 
-  std::hash<std::string> str_hash;
-  std::string arg1 = argv[1];
+Command * helpCmd = new HelpCmd();
+Command * createCmd = new CreateCmd();
+Command * resolveCmd = new ResolveCmd();
+Command * listCmd = new ListCmd();
 
-  if (arg1 == "-c" || arg1 == "--create") {
-      if (argc < 3) {
-        std::cerr << "No ticket description provided" << '\n';
-        print_help();
-      } else {
-        std::ofstream taskerFile;
-        taskerFile.open(".tasker", std::ios::out|std::ios::app);
-        if (taskerFile.is_open()) {
-          std::string description = argv[2];
-          taskerFile << str_hash(description) << " " << argv[2] << "\n";
-          std::cout << "Ticket created \"" << argv[2] << "\"\n";
-          taskerFile.close();
-        }
-      }
-  }
+map<string, Command*> options = {
+		{"-c", createCmd},
+		{"create", createCmd},
+		{"-r", resolveCmd},
+		{"resolve", resolveCmd},
+		{"-l", listCmd},
+		{"list", listCmd}
+};
 
-  if (arg1 == "-r" || arg1 == "--resolve") {
-    if (argc < 3) {
-      std::cerr << "No ticket ID provided!" << '\n';
-      print_help();
-    } else {
-      std::ifstream taskerFileRead;
-      std::ofstream taskerFileWrite;
-      taskerFileRead.open(".tasker");
-      taskerFileWrite.open(".tasker~");
-      if (taskerFileRead.is_open() && taskerFileWrite.is_open()) {
-        std::string line;
-        std::string ticket_id = argv[2];
-        while (std::getline(taskerFileRead, line)) {
-          if (line.rfind(ticket_id, 0) == 0) {
-            line = "* " + line;
-          }
-          taskerFileWrite << line + "\n";
-        }
-        taskerFileWrite.close();
-        taskerFileRead.close();
-      }
 
-      std::ifstream tempFile;
-      std::ofstream originFile;
-      tempFile.open(".tasker~");
-      originFile.open(".tasker");
+int main(int argc, char *argv[]) {
 
-      if (tempFile.is_open() && originFile.is_open()) {
-        std::string line;
-        while (std::getline(tempFile, line)) {
-          originFile << line + "\n";
-        }
-        tempFile.close();
-        originFile.close();
-        std::remove(".tasker~");
-      }
-    }
-  }
+	if (argc < 2) {
+		helpCmd->run(argc, argv);
+		return 0;
+	}
 
-  if (arg1 == "-l") {
-    std::ifstream taskerFileRead;
-    taskerFileRead.open(".tasker");
-    if (taskerFileRead.is_open()) {
-      std::string line;
-      std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << '\n';
-      while (std::getline(taskerFileRead, line)) {
-        std::cout << "  " << line << '\n';
-      }
-      std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << '\n';
-      taskerFileRead.close();
-    }
-  }
+	string optionKey = argv[1];
+	options[optionKey]->run(argc, argv);
+
 }

@@ -1,6 +1,11 @@
 tsk
+
 .tasker
 .vscode
 .idea
+.project
+.cproject
+.settings
+
 Tasker.dSYM
 Tasker
